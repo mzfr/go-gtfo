@@ -49,13 +49,10 @@ func gtfobins(binary string) {
 		return
 	}
 
-	// unmarshal for yaml
 	if err = yaml.Unmarshal(body, &config); err != nil {
 		fmt.Println(err)
 	}
 
-	// red := color.New(color.FgRed)
-	// boldRed := red.Add(color.Bold)
 	yellow := color.New(color.FgYellow)
 	boldYellow := yellow.Add(color.Bold)
 	green := color.New(color.FgGreen).SprintFunc()
@@ -78,7 +75,6 @@ func gtfobins(binary string) {
 }
 
 func main() {
-	//define variables to hold flag value
 	var bin string
 	flag.StringVar(&bin, "bin", "", "")
 	flag.StringVar(&bin, "b", "", "")
@@ -88,7 +84,6 @@ func main() {
 	flag.StringVar(&exe, "e", "", "")
 
 	flag.Parse()
-	// TODO: https://github.com/theckman/yacspin
 	if bin != "" {
 		gtfobins(bin)
 	} else if exe != "" {
