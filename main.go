@@ -35,8 +35,8 @@ func gtfobins(binary string) {
 	config := make(map[interface{}]interface{})
 
 	// Format the URL and send the get request.
-	binary_url := fmt.Sprintf(RAW_BIN_URL, binary)
-	req, err := http.Get(binary_url)
+	binaryURL := fmt.Sprintf(rawBinURL, binary)
+	req, err := http.Get(binaryURL)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to create request: %s\n", err)
 		return
@@ -51,14 +51,15 @@ func gtfobins(binary string) {
 
 	// unmarshal for yaml
 	if err = yaml.Unmarshal(body, &config); err != nil {
-		fmt.Println("error: %v", err)
+		fmt.Println(err)
 	}
 
-	red := color.New(color.FgRed)
-	boldRed := red.Add(color.Bold)
+	// red := color.New(color.FgRed)
+	// boldRed := red.Add(color.Bold)
 	yellow := color.New(color.FgYellow)
 	boldYellow := yellow.Add(color.Bold)
 	green := color.New(color.FgGreen).SprintFunc()
+	magenta := color.New(color.FgHiMagenta).SprintFunc()
 	// This is a weird for loop to get out the required
 	// values out of the map[interface{}]interface{}
 	for _, key := range config {
@@ -69,14 +70,13 @@ func gtfobins(binary string) {
 				boldYellow.Println("# ", details["description"])
 			}
 			code := strings.ReplaceAll(fmt.Sprintf("%v", details["code"]), "\n", "\n\t")
-			fmt.Printf("\n\nCode: \t %v \n", green(code))
-			boldRed.Println("Type:\t", k)
-			fmt.Println("\n")
+			fmt.Printf("\nCode:\t%v \n", green(code))
+			fmt.Printf("Type:\t%v\n", magenta(k))
+			fmt.Println()
 		}
 	}
 }
 
-//Main function
 func main() {
 	//define variables to hold flag value
 	var bin string
