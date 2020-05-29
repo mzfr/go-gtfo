@@ -12,8 +12,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var BIN_URL = "https://gtfobins.github.io/"
-var RAW_BIN_URL = "https://raw.githubusercontent.com/GTFOBins/GTFOBins.github.io/master/_gtfobins/%s.md"
+var rawBinURL = "https://raw.githubusercontent.com/GTFOBins/GTFOBins.github.io/master/_gtfobins/%s.md"
 
 // TODO: use flaggy
 // https://github.com/integrii/flaggy
