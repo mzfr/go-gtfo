@@ -1,12 +1,22 @@
 package main
 
 import (
-	"os"
-	"fmt"
 	"flag"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"os"
 	"strings"
+
+	"github.com/fatih/color"
+	"gopkg.in/yaml.v2"
 )
 
+var BIN_URL = "https://gtfobins.github.io/"
+var RAW_BIN_URL = "https://raw.githubusercontent.com/GTFOBins/GTFOBins.github.io/master/_gtfobins/%s.md"
+
+// TODO: use flaggy
+// https://github.com/integrii/flaggy
 func init() {
 	flag.Usage = func() {
 		h := []string{
@@ -22,7 +32,56 @@ func init() {
 	}
 }
 
+// Function to get the gtfobins yaml file and parse it
+// for proper displaying on the screen
+func gtfobins(binary string) {
+	config := make(map[interface{}]interface{})
+
+	// Format the URL and send the get request.
+	binary_url := fmt.Sprintf(RAW_BIN_URL, binary)
+	req, err := http.Get(binary_url)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to create request: %s\n", err)
+		return
+	}
+
+	defer req.Body.Close()
+
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		return
+	}
+
+	// unmarshal for yaml
+	if err = yaml.Unmarshal(body, &config); err != nil {
+		fmt.Println("error: %v", err)
+	}
+
+	red := color.New(color.FgRed)
+	boldRed := red.Add(color.Bold)
+	yellow := color.New(color.FgYellow)
+	boldYellow := yellow.Add(color.Bold)
+	green := color.New(color.FgGreen).SprintFunc()
+	// This is a weird for loop to get out the required
+	// values out of the map[interface{}]interface{}
+	for _, key := range config {
+		for k, v := range key.(map[interface{}]interface{}) {
+			details := v.([]interface{})[0].(map[interface{}]interface{})
+
+			if details["description"] != nil {
+				boldYellow.Println("# ", details["description"])
+			}
+			code := strings.ReplaceAll(fmt.Sprintf("%v", details["code"]), "\n", "\n\t")
+			fmt.Printf("\n\nCode: \t %v \n", green(code))
+			boldRed.Println("Type:\t", k)
+			fmt.Println("\n")
+		}
+	}
+}
+
+//Main function
 func main() {
+	//define variables to hold flag value
 	var bin string
 	flag.StringVar(&bin, "bin", "", "")
 	flag.StringVar(&bin, "b", "", "")
@@ -32,9 +91,8 @@ func main() {
 	flag.StringVar(&exe, "e", "", "")
 
 	flag.Parse()
-
-	if bin != ""  {
-		fmt.Println("Binaries")
+	// TODO: https://github.com/theckman/yacspin
+	if bin != "" {
 		gtfobins(bin)
 	} else if exe != "" {
 		fmt.Println("Windows sucks")
