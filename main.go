@@ -14,8 +14,6 @@ import (
 
 var rawBinURL = "https://raw.githubusercontent.com/GTFOBins/GTFOBins.github.io/master/_gtfobins/%s.md"
 
-// TODO: use flaggy
-// https://github.com/integrii/flaggy
 func init() {
 	flag.Usage = func() {
 		h := []string{
