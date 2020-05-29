@@ -57,15 +57,19 @@ func gtfobins(binary string) {
 	boldYellow := yellow.Add(color.Bold)
 	green := color.New(color.FgGreen).SprintFunc()
 	magenta := color.New(color.FgHiMagenta).SprintFunc()
+
 	// This is a weird for loop to get out the required
 	// values out of the map[interface{}]interface{}
 	for _, key := range config {
 		for k, v := range key.(map[interface{}]interface{}) {
 			details := v.([]interface{})[0].(map[interface{}]interface{})
 
+			// Just formatting and printing.
 			if details["description"] != nil {
 				boldYellow.Println("# ", details["description"])
 			}
+
+			// This is so that all the code section start from the same point.
 			code := strings.ReplaceAll(fmt.Sprintf("%v", details["code"]), "\n", "\n\t")
 			fmt.Printf("\nCode:\t%v \n", green(code))
 			fmt.Printf("Type:\t%v\n", magenta(k))
@@ -84,9 +88,11 @@ func main() {
 	flag.StringVar(&exe, "e", "", "")
 
 	flag.Parse()
+
 	if bin != "" {
 		gtfobins(bin)
 	} else if exe != "" {
+		// TODO: Implement support for lolbas
 		fmt.Println("Windows sucks")
 	} else {
 		fmt.Println("No option selected")
