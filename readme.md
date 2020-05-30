@@ -4,7 +4,7 @@
 
 Reimplementation of my tool [gtfo](https://github.com/mzfr/gtfo) in Go.
 
-I'm mostly doing this as a means of learning Go as it seemed like a nice first project to start with. Also it's much easier to make binaries from Go scripts.
+I'm mostly doing this as a means of learning Go as it seemed like a nice first project to start with. Also, it's much easier to make binaries from Go scripts.
 
 ## Gallery
 
@@ -18,7 +18,7 @@ I'm mostly doing this as a means of learning Go as it seemed like a nice first p
 
 ## Usage
 
-I decided to keep this plain and simple so there is only 1 option now, to search the gtfobins. I haven't implemented lolbas searching functionality because I never used that in the python verion of gtfo and I thought that might just be waste of time. So if you would like to have that supported please open an issue.
+I decided to keep this plain and simple so there is only 1 option now, to search the gtfobins. I haven't implemented lolbas searching functionality because I never used that in the python version	of gtfo and I thought that might just be a waste of time. So if you would like to have that supported please open an issue.
 
 ```
 Search gtfobin from terminal
@@ -29,7 +29,7 @@ Options:
 
 ## Installation
 
-You can download the pre-compiled binary from [here]()
+You can download the pre-compiled binary from [here](https://github.com/mzfr/go-gtfo/releases)
 
 If you want to make changes to the code and then compile the binary you can clone this repo and then run:
 
@@ -37,10 +37,8 @@ If you want to make changes to the code and then compile the binary you can clon
 go build
 ```
 
-Also you can run following command to install it directly:
+Also, you can run the following command to install it directly:
 
 ```
 go get github.com/mzfr/go-gtfo
 ```
-
-
