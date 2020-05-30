@@ -44,6 +44,12 @@ func gtfobins(binary string) {
 
 	defer req.Body.Close()
 
+	// Just incase someone entered some random name
+	if req.StatusCode == 404 {
+		color.Red("[!] Binary not found on GTFObins")
+		return
+	}
+
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		return
