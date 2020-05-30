@@ -18,7 +18,7 @@ var rawBinURL = "https://raw.githubusercontent.com/GTFOBins/GTFOBins.github.io/m
 func init() {
 	flag.Usage = func() {
 		h := []string{
-			"Search gtfobin and lolbas files from terminal",
+			"Search gtfobin from terminal",
 			"",
 			"Options:",
 			"  -b, --bin <binary>       Search Linux binaries on gtfobins",
