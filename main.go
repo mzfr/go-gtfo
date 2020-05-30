@@ -8,11 +8,13 @@ import (
 	"os"
 	"strings"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/fatih/color"
 	"gopkg.in/yaml.v2"
 )
 
 var rawBinURL = "https://raw.githubusercontent.com/GTFOBins/GTFOBins.github.io/master/_gtfobins/%s.md"
+var rawExeURL = "https://raw.githubusercontent.com/LOLBAS-Project/LOLBAS-Project.github.io/master/_lolbas/%s.md"
 
 func init() {
 	flag.Usage = func() {
@@ -54,7 +56,6 @@ func gtfobins(binary string) {
 	if err != nil {
 		return
 	}
-
 	if err = yaml.Unmarshal(body, &config); err != nil {
 		fmt.Println(err)
 	}
@@ -70,18 +71,58 @@ func gtfobins(binary string) {
 		for k, v := range key.(map[interface{}]interface{}) {
 			details := v.([]interface{})[0].(map[interface{}]interface{})
 
+			// This is so that all the code section start from the same point.
+			code := strings.ReplaceAll(fmt.Sprintf("%v", details["code"]), "\n", "\n\t")
+
 			// Just formatting and printing.
 			if details["description"] != nil {
 				boldYellow.Println("# ", details["description"])
 			}
-
-			// This is so that all the code section start from the same point.
-			code := strings.ReplaceAll(fmt.Sprintf("%v", details["code"]), "\n", "\n\t")
 			fmt.Printf("\nCode:\t%v \n", green(code))
 			fmt.Printf("Type:\t%v\n", magenta(k))
 			fmt.Println()
 		}
 	}
+}
+
+func lolbas(exe string) {
+	mapExe := make(map[string]string)
+
+	doc, err := goquery.NewDocument("https://lolbas-project.github.io/")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to create request: %s\n", err)
+		return
+	}
+	doc.Find(".bin-name").Each(func(index int, item *goquery.Selection) {
+		href, _ := item.Attr("href")
+		mapExe[item.Text()] = strings.TrimSuffix(href[8:], "/")
+	})
+
+	exeURL := fmt.Sprintf(rawExeURL, mapExe[exe])
+	fmt.Println(exeURL)
+	fmt.Println(mapExe[exe])
+	req, err := http.Get(exeURL)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to create request: %s\n", err)
+		return
+	}
+	defer req.Body.Close()
+
+	// Just incase someone entered some random name
+	if req.StatusCode == 404 {
+		color.Red("[!] Exe not found on lolbas")
+		return
+	}
+
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		return
+	}
+	config := make(map[interface{}]interface{})
+	if err = yaml.Unmarshal(body, &config); err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(config)
 }
 
 func main() {
@@ -99,7 +140,7 @@ func main() {
 		gtfobins(bin)
 	} else if exe != "" {
 		// TODO: Implement support for lolbas
-		fmt.Println("Windows sucks")
+		lolbas(exe)
 	} else {
 		fmt.Println("No option selected")
 		os.Exit(2)
