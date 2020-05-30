@@ -1,18 +1,33 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
 
-	figure "github.com/common-nighthawk/go-figure"
+	"github.com/common-nighthawk/go-figure"
 	"github.com/fatih/color"
 	"gopkg.in/yaml.v2"
 )
 
 var rawBinURL = "https://raw.githubusercontent.com/GTFOBins/GTFOBins.github.io/master/_gtfobins/%s.md"
+
+func init() {
+	flag.Usage = func() {
+		h := []string{
+			"Search gtfobin and lolbas files from terminal",
+			"",
+			"Options:",
+			"  -b, --bin <binary>       Search Linux binaries on gtfobins",
+			"",
+		}
+
+		fmt.Fprintf(os.Stderr, strings.Join(h, "\n"))
+	}
+}
 
 // Function to get the gtfobins yaml file and parse it
 // for proper displaying on the screen
@@ -21,6 +36,7 @@ func gtfobins(binary string) {
 
 	// Format the URL and send the get request.
 	binaryURL := fmt.Sprintf(rawBinURL, binary)
+
 	req, err := http.Get(binaryURL)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to create request: %s\n", err)
@@ -69,8 +85,13 @@ func gtfobins(binary string) {
 }
 
 func main() {
+	var bin string
+	flag.StringVar(&bin, "bin", "", "")
+	flag.StringVar(&bin, "b", "", "")
+
+	flag.Parse()
 	myFigure := figure.NewFigure("# gtfo", "big", true)
 	myFigure.Print()
-	bins := os.Args[1]
-	gtfobins(bins)
+
+	gtfobins(bin)
 }
