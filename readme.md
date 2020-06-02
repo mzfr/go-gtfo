@@ -43,6 +43,13 @@ Also, you can run the following command to install it directly:
 go get github.com/mzfr/go-gtfo
 ```
 
+If you want to run this locally then do the following:
+
+1) Clone this repo: `git clone https://github.com/mzfr/go-gtfo`
+2) run: `go run main.go -b <binary_name>`
+
+__Note__: Make sure you have go installed.
+
 ## Support
 
 If you'd like you can buy me some coffee:
