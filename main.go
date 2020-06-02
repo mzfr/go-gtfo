@@ -67,20 +67,29 @@ func gtfobins(binary string) {
 	// This is a weird for loop to get out the required
 	// values out of the map[interface{}]interface{}
 	for _, key := range config {
-		for k, v := range key.(map[interface{}]interface{}) {
-			details := v.([]interface{})[0].(map[interface{}]interface{})
+		// Use switch case because some have direct strings
+		// and some yamls have more information.
+		switch key.(type) {
+		case map[interface{}]interface{}:
+			for k, v := range key.(map[interface{}]interface{}) {
+				details := v.([]interface{})[0].(map[interface{}]interface{})
 
-			// This is so that all the code section start from the same point.
-			code := strings.ReplaceAll(fmt.Sprintf("%v", details["code"]), "\n", "\n\t")
+				// This is so that all the code section start from the same point.
+				code := strings.ReplaceAll(fmt.Sprintf("%v", details["code"]), "\n", "\n\t")
 
-			// Just formatting and printing.
-			if details["description"] != nil {
-				boldYellow.Println("\n# ", details["description"])
+				// Just formatting and printing.
+				if details["description"] != nil {
+					boldYellow.Println("\n# ", details["description"])
+				}
+				fmt.Printf("Code:\t%v \n", green(code))
+				fmt.Printf("Type:\t%v\n", magenta(k))
+				fmt.Println()
 			}
-			fmt.Printf("Code:\t%v \n", green(code))
-			fmt.Printf("Type:\t%v\n", magenta(k))
-			fmt.Println()
+		case string:
+			boldYellow.Println("\n# ", key)
+
 		}
+
 	}
 }
 
