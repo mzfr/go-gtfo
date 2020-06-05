@@ -99,7 +99,7 @@ func main() {
 	flag.StringVar(&bin, "b", "", "")
 
 	flag.Parse()
-	myFigure := figure.NewFigure("# gtfo", "big", true)
+	myFigure := figure.NewColorFigure("# gtfo", "big", "green", true)
 	myFigure.Print()
 
 	gtfobins(bin)
