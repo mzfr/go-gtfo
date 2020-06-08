@@ -4,16 +4,19 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strings"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/common-nighthawk/go-figure"
 	"github.com/fatih/color"
 	"gopkg.in/yaml.v2"
 )
 
 var rawBinURL = "https://raw.githubusercontent.com/GTFOBins/GTFOBins.github.io/master/_gtfobins/%s.md"
+var rawExeURL = "https://raw.githubusercontent.com/LOLBAS-Project/LOLBAS-Project.github.io/master/_lolbas/%s.md"
 
 func init() {
 	flag.Usage = func() {
@@ -22,6 +25,7 @@ func init() {
 			"",
 			"Options:",
 			"  -b, --bin <binary>       Search Linux binaries on gtfobins",
+			"  -e, --exe <EXE>          Search Linux binaries on gtfobins",
 			"",
 		}
 
@@ -93,14 +97,81 @@ func gtfobins(binary string) {
 	}
 }
 
+func lolbas(exe string) {
+	config := make(map[interface{}]interface{})
+	exeMap := make(map[string]string)
+
+	doc, err := goquery.NewDocument("https://lolbas-project.github.io/")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	doc.Find(".bin-name").Each(func(index int, item *goquery.Selection) {
+		href, _ := item.Attr("href")
+		exeMap[item.Text()] = href[8 : len(href)-1]
+	})
+
+	// TODO: ignore case
+	if val, ok := exeMap[exe]; ok {
+
+		exeURL := fmt.Sprintf(rawExeURL, val)
+
+		req, err := http.Get(exeURL)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "failed to create request: %s\n", err)
+			return
+		}
+
+		defer req.Body.Close()
+
+		// Just incase someone entered some random name
+		if req.StatusCode == 404 {
+			color.Red("[!] Binary not found on GTFObins")
+			return
+		}
+
+		body, err := ioutil.ReadAll(req.Body)
+		if err != nil {
+			return
+		}
+
+		if err = yaml.Unmarshal(body, &config); err != nil {
+			fmt.Println(err)
+		}
+		// fmt.Println(reflect.TypeOf(config["Commands"]))
+
+		yellow := color.New(color.FgYellow)
+		boldYellow := yellow.Add(color.Bold)
+		green := color.New(color.FgGreen).SprintFunc()
+		magenta := color.New(color.FgHiMagenta).SprintFunc()
+
+		for _, key := range config["Commands"].([]interface{}) {
+			details := key.(map[interface{}]interface{})
+			boldYellow.Println("\n# ", details["Description"])
+			fmt.Printf("CMD:\t\t%v \n", green(details["Command"]))
+			fmt.Printf("Category:\t%v\n", magenta(details["Category"]))
+			fmt.Printf("Privileges:\t%v\n", magenta(details["Privileges"]))
+			fmt.Println()
+		}
+	}
+}
+
 func main() {
 	var bin string
 	flag.StringVar(&bin, "bin", "", "")
 	flag.StringVar(&bin, "b", "", "")
 
+	var exe string
+	flag.StringVar(&exe, "exe", "", "")
+	flag.StringVar(&exe, "e", "", "")
+
 	flag.Parse()
 	myFigure := figure.NewColorFigure("# gtfo", "big", "green", true)
 	myFigure.Print()
 
-	gtfobins(bin)
+	if bin != "" {
+		gtfobins(bin)
+	} else if exe != "" {
+		lolbas(exe)
+	}
 }
