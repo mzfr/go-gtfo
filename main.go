@@ -127,7 +127,7 @@ func lolbas(exe string) {
 
 		// Just incase someone entered some random name
 		if req.StatusCode == 404 {
-			color.Red("[!] Binary not found on GTFObins")
+			color.Red("[!] Exe not found on Lolbas")
 			return
 		}
 
