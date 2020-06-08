@@ -26,7 +26,7 @@ func init() {
 			"",
 			"Options:",
 			"  -b, --bin <binary>       Search Linux binaries on gtfobins",
-			"  -e, --exe <EXE>          Search Linux binaries on gtfobins",
+			"  -e, --exe <EXE>          Search Windows exe on lolbas",
 			"",
 		}
 
