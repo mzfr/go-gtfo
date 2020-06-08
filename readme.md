@@ -1,6 +1,11 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-## GTFO
+
+<h1 align="center">
+  <br>
+  <a href="https://github.com/mzfr/go-gtfo"><img src="images/logo.png" alt="gtfo"></a>
+  <br>
+</h1>
 
 Reimplementation of my tool [gtfo](https://github.com/mzfr/gtfo) in Go.
 
