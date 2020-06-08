@@ -15,6 +15,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+//TODO: Lot of code is repeating. Need to figure it out.
 var rawBinURL = "https://raw.githubusercontent.com/GTFOBins/GTFOBins.github.io/master/_gtfobins/%s.md"
 var rawExeURL = "https://raw.githubusercontent.com/LOLBAS-Project/LOLBAS-Project.github.io/master/_lolbas/%s.md"
 
